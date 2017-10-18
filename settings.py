@@ -3,9 +3,13 @@
 
 from os import path, getenv
 from sys import exit
+from time import sleep
 import ConfigParser
 import logging
 from UserDict import IterableUserDict
+from flask import request, Response
+from functools import wraps
+import zmq
 
 CONFIG_DIR = '.screenly/'
 CONFIG_FILE = 'screenly.conf'
@@ -14,16 +18,23 @@ DEFAULTS = {
         'database': CONFIG_DIR + 'screenly.db',
         'listen': '0.0.0.0:8080',
         'assetdir': 'screenly_assets',
-        'use_24_hour_clock': False
+        'use_24_hour_clock': False,
+        'websocket_port': '9999'
     },
     'viewer': {
+        'player_name': '',
         'show_splash': True,
         'audio_output': 'hdmi',
         'shuffle_playlist': False,
         'resolution': '1920x1080',
         'default_duration': '10',
+        'default_streaming_duration': '300',
         'debug_logging': False,
         'verify_ssl': True,
+    },
+    'auth': {
+        'user': '',
+        'password': ''
     }
 }
 CONFIGURABLE_SETTINGS = DEFAULTS['viewer']
@@ -115,4 +126,50 @@ class ScreenlySettings(IterableUserDict):
     def get_listen_port(self):
         return self['listen'].split(':')[1]
 
+    def check_user(self, user, password):
+        if not self['user'] or not self['password']:
+            logging.debug('Username or password not configured: skip authentication')
+            return True
+
+        return self['user'] == user and self['password'] == password
+
+
 settings = ScreenlySettings()
+
+
+class ZmqPublisher:
+    INSTANCE = None
+
+    def __init__(self):
+        if self.INSTANCE is not None:
+            raise ValueError("An instantiation already exists!")
+
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.PUB)
+        self.socket.connect('tcp://127.0.0.1:10001')
+        sleep(1)
+
+    @classmethod
+    def get_instance(cls):
+        if cls.INSTANCE is None:
+            cls.INSTANCE = ZmqPublisher()
+        return cls.INSTANCE
+
+    def send(self, msg):
+        self.socket.send(msg)
+
+
+def authenticate():
+    return Response("Access denied", 401, {"WWW-Authenticate": "Basic realm=private"})
+
+
+def auth_basic(orig):
+    @wraps(orig)
+    def decorated(*args, **kwargs):
+        if not settings['user'] or not settings['password']:
+            return orig(*args, **kwargs)
+        auth = request.authorization
+        if not auth or not settings.check_user(auth.username, auth.password):
+            return authenticate()
+        return orig(*args, **kwargs)
+    return decorated
