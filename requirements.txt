@@ -1,5 +1,6 @@
 Mako==0.7.3
 MarkupSafe==0.15
+netifaces==0.10.4
 ansible==2.1.0.0
 flask==0.12.2
 flask_restful==0.3.6
