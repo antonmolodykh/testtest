@@ -6,6 +6,7 @@ export DISPLAY=:0.0
 
 echo "pre x"
 #rm ~/.Xauthority
+python /home/pi/screenly/server.py
 startx /usr/bin/python /home/pi/screenly/viewer.py
 # umount /dev/shm && mount -t tmpfs shm /dev/shm
 # rm /tmp/.X0-lock &>/dev/null || true
