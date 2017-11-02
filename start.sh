@@ -3,15 +3,15 @@
 export DISPLAY=:0.0
 # usermod -a -G video pi
 
-su - root -c "cp /etc/hosts ~/hosts.new"
-su - root -c "sed -i \"s/localhost.localdomain/$HOSTNAME/\" ~/hosts.new"
-su - root -c "cat ~/hosts.new > /etc/hosts"
+cp /etc/hosts ~/hosts.new
+sed -i \"s/localhost.localdomain/$HOSTNAME/\" ~/hosts.new
+cat ~/hosts.new > /etc/hosts
 
 
 echo "pre x"
 #rm ~/.Xauthority
-python /home/pi/screenly/server.py
-startx /usr/bin/python /home/pi/screenly/viewer.py
+su - pi -c "python /home/pi/screenly/server.py"
+su - pi -c "startx /usr/bin/python /home/pi/screenly/viewer.py"
 # umount /dev/shm && mount -t tmpfs shm /dev/shm
 # rm /tmp/.X0-lock &>/dev/null || true
 
