@@ -14,7 +14,7 @@ rm ~/.Xauthority
 su - pi -c "python /home/pi/screenly/server.py" &
 startx &
 sleep 10
-su - pi -c "startx /usr/bin/python /home/pi/screenly/viewer.py"
+su - pi -c "python /home/pi/screenly/viewer.py"
 # umount /dev/shm && mount -t tmpfs shm /dev/shm
 # rm /tmp/.X0-lock &>/dev/null || true
 
