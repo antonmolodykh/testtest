@@ -2,7 +2,7 @@ FROM resin/%%RESIN_MACHINE_NAME%%-python
 MAINTAINER Viktor Petersson <vpetersson@screenly.io>
 
 RUN apt-get update && \
-    apt-get -y install build-essential git-core net-tools python-netifaces python-simplejson python-imaging python-dev sqlite3 libffi-dev libssl-dev curl matchbox omxplayer uzbl x11-xserver-utils xserver-xorg xorg xserver-xorg-core xserver-xorg-legacy && \
+    apt-get -y install build-essential git-core net-tools python-netifaces python-simplejson python-imaging python-dev sqlite3 libffi-dev libssl-dev curl psmisc matchbox omxplayer uzbl x11-xserver-utils xserver-xorg xorg xserver-xorg-core xserver-xorg-legacy && \
     apt-get clean
 
 
@@ -16,25 +16,22 @@ RUN curl -s https://bootstrap.pypa.io/get-pip.py | python && \
 RUN useradd pi
 
 # Install config file and file structure
-RUN mkdir -p /home/pi/.screenly /home/pi/screenly /home/pi/screenly_assets /home/pi/.config/uzbl /etc/X11/xdm
-COPY ansible/roles/screenly/files/screenly.conf /home/pi/.screenly/screenly.conf
-COPY ansible/roles/screenly/files/screenly.db /home/pi/.screenly/screenly.db
-COPY ansible/roles/screenly/files/uzbl-config /home/pi/.config/uzbl/config-screenly
+RUN mkdir -p /etc/X11/xdm /home/pi/screenly
+#COPY ansible/roles/screenly/files/screenly.conf /home/pi/.screenly/screenly.conf
+#COPY ansible/roles/screenly/files/screenly.db /home/pi/.screenly/screenly.db
+#COPY ansible/roles/screenly/files/uzbl-config /home/pi/.config/uzbl/config-screenly
 COPY ansible/roles/screenly/files/gtkrc-2.0 /home/pi/.gtkrc-2.0
 COPY ansible/roles/screenly/files/xdm-config /etc/X11/xdm/xdm-config
 
-#RUN mkdir ~/.fluxbox
-#RUN echo "xset s off" > ~/.fluxbox/startup && echo "xserver-command=X -s 0 dpms" >> ~/.fluxbox/startup
-RUN echo "#!/bin/bash" > /etc/X11/xinit/xserverrc \
-  && echo "" >> /etc/X11/xinit/xserverrc \
-  && echo 'exec /usr/bin/X -s 0 dpms -nocursor -nolisten tcp "$@"' >> /etc/X11/xinit/xserverrc
-
-RUN echo "gpu_mem=64" > /boot/config.txt
+ENV RESIN_HOST_CONFIG_gpu_mem 64
 
 # Set the locale
 #ENV LANG en_US.UTF-8  
 #ENV LANGUAGE en_US:en  
-#ENV LC_ALL en_US.UTF-8  
+#ENV LC_ALL en_US.UTF-8
+
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
 
 # Copy in code base
 COPY . /home/pi/screenly
