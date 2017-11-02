@@ -20,7 +20,7 @@ RUN mkdir -p /home/pi/.screenly /home/pi/screenly /home/pi/screenly_assets /home
 COPY ansible/roles/screenly/files/screenly.conf /home/pi/.screenly/screenly.conf
 COPY ansible/roles/screenly/files/screenly.db /home/pi/.screenly/screenly.db
 COPY ansible/roles/screenly/files/uzbl-config /home/pi/.config/uzbl/config-screenly
-COPY ansible/roles/screenly/files/gtkrc-2.0 ~/.gtkrc-2.0
+COPY ansible/roles/screenly/files/gtkrc-2.0 /home/pi/.gtkrc-2.0
 COPY ansible/roles/screenly/files/xdm-config /etc/X11/xdm/xdm-config
 
 #RUN mkdir ~/.fluxbox
@@ -29,15 +29,18 @@ RUN echo "#!/bin/bash" > /etc/X11/xinit/xserverrc \
   && echo "" >> /etc/X11/xinit/xserverrc \
   && echo 'exec /usr/bin/X -s 0 dpms -nocursor -nolisten tcp "$@"' >> /etc/X11/xinit/xserverrc
 
-RUN echo "gpu_mem=64" > /boot/config.txt 
+RUN echo "gpu_mem=64" > /boot/config.txt
+
+# Set the locale
+#ENV LANG en_US.UTF-8  
+#ENV LANGUAGE en_US:en  
+#ENV LC_ALL en_US.UTF-8  
 
 # Copy in code base
-
 COPY . /home/pi/screenly
 
 RUN ls -la /home/pi/screenly
 RUN chown -R pi:pi /home/pi
-
 
 #USER pi
 WORKDIR /home/pi/screenly

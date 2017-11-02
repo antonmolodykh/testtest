@@ -12,6 +12,7 @@ cat ~/hosts.new > /etc/hosts
 
 
 echo "pre x"
+echo $DISABLE_UPDATE_CHECK
 
 
 rm /tmp/.X0-lock &>/dev/null || true
@@ -29,5 +30,5 @@ while [ "$xset_is_ready" != "0" ]; do
     echo "xset q returned $xset_is_ready. Waiting for 1 s..."
     sleep 1
 done
-su - pi -c "/usr/bin/matchbox-window-manager -use_titlebar no -use_cursor no"
-su - pi -c "python /home/pi/screenly/viewer.py"
+#su - pi -c "/usr/bin/matchbox-window-manager -use_titlebar no -use_cursor no"
+su - pi -c "DISABLE_UPDATE_CHECK=True python /home/pi/screenly/viewer.py"
