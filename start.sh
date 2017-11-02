@@ -1,7 +1,8 @@
 #!/bin/bash
 
 export DISPLAY=:0.0
-# usermod -a -G video pi
+usermod -a -G video pi
+usermod -a -G tty pi
 
 cp /etc/hosts ~/hosts.new
 sed -i "s/localhost.localdomain/$HOSTNAME/" ~/hosts.new
