@@ -10,7 +10,7 @@ cat ~/hosts.new > /etc/hosts
 
 
 echo "pre x"
-#rm ~/.Xauthority
+rm ~/.Xauthority
 su - pi -c "python /home/pi/screenly/server.py" &
 su - pi -c "startx /usr/bin/python /home/pi/screenly/viewer.py"
 # umount /dev/shm && mount -t tmpfs shm /dev/shm
