@@ -3,6 +3,10 @@
 export DISPLAY=:0.0
 # usermod -a -G video pi
 
+su - root -c "cp /etc/hosts ~/hosts.new"
+su - root -c "sed -i \"s/localhost.localdomain/$HOSTNAME/\" ~/hosts.new"
+su - root -c "cat ~/hosts.new > /etc/hosts"
+
 
 echo "pre x"
 #rm ~/.Xauthority

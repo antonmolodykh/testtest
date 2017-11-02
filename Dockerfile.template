@@ -36,9 +36,6 @@ COPY . /home/pi/screenly
 RUN ls -la /home/pi/screenly
 RUN chown -R pi:pi /home/pi
 
-RUN cp /etc/hosts ~/hosts.new
-RUN sed -i "s/localhost.localdomain/$HOSTNAME/" ~/hosts.new
-RUN cat ~/hosts.new > /etc/hosts
 
 USER pi
 WORKDIR /home/pi/screenly
