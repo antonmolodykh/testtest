@@ -4,6 +4,8 @@ export DISPLAY=:0.0
 usermod -a -G video pi
 usermod -a -G tty pi
 
+umount /dev/shm && mount -t tmpfs shm /dev/shm
+
 cp /etc/hosts ~/hosts.new
 sed -i "s/localhost.localdomain/$HOSTNAME/" ~/hosts.new
 cat ~/hosts.new > /etc/hosts
