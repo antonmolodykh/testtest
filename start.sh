@@ -10,15 +10,18 @@ cat ~/hosts.new > /etc/hosts
 
 
 echo "pre x"
-rm ~/.Xauthority
+
+
+
+# umount /dev/shm && mount -t tmpfs shm /dev/shm
+rm /tmp/.X0-lock &>/dev/null || true
+
+su - pi -c "unset XAUTHORITY; xauth add $(xauth list)"
+
 su - pi -c "python /home/pi/screenly/server.py" &
 startx &
 sleep 10
 su - pi -c "python /home/pi/screenly/viewer.py"
-# umount /dev/shm && mount -t tmpfs shm /dev/shm
-# rm /tmp/.X0-lock &>/dev/null || true
-
-# su - pi -c "unset XAUTHORITY; xauth add $(xauth list)"
 # startx &
 
 # xset q &>/dev/null
