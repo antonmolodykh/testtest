@@ -58,7 +58,7 @@ class ScreenlySettings(IterableUserDict):
 
     def __init__(self, *args, **kwargs):
         IterableUserDict.__init__(self, *args, **kwargs)
-        self.home = getenv('HOME', '/home/pi')
+        self.home = getenv('HOME')
         self.conf_file = self.get_configfile()
 
         if not path.isfile(self.conf_file):
